@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RolGuardar {
+public class RolModificar {
     @NotBlank(message = "El nombre del rol es obligatorio")
     @Size(max = 50, message = "El nombre del rol no puede superar los 50 caracteres")
     private String nombreRol;
