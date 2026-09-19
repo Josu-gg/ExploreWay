@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface IDestinoRepository extends JpaRepository<Destino, Integer> {
     Optional<Destino> findByNombre(String nombre);
     boolean existsByNombre(String nombre);
-    List<Destino> findByEstado(Integer IdEstado);
+    List<Destino> findByEstado_Id(Integer idEstado);
 }
