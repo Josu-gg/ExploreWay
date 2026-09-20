@@ -4,14 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.esfe.DTOs.cliente.ClienteGuardar;
+import org.esfe.DTOs.cliente.ClienteModificar;
 import org.esfe.DTOs.cliente.ClienteSalida;
-import org.esfe.DTOs.cliente.RegistroCliente;
 import org.esfe.Servicios.Interfaces.IClienteService;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,13 +36,19 @@ public class ClienteController {
 
     @PostMapping("/registro")
     @Operation(summary = "Registrar un cliente (crea Persona, Usuario con rol Cliente y Cliente)")
-    public ResponseEntity<ClienteSalida> registrar(@Valid @RequestBody RegistroCliente datos) {
+    public ResponseEntity<ClienteSalida> registrar(@Valid @RequestBody ClienteGuardar datos) {
         ClienteSalida creado = clienteService.registrar(datos);
         URI ubicacion = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/clientes/{id}")
                 .buildAndExpand(creado.getIdCliente())
                 .toUri();
         return ResponseEntity.created(ubicacion).body(creado);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Modificar un cliente (datos personales y estado)")
+    public ClienteSalida modificar(@PathVariable Integer id, @Valid @RequestBody ClienteModificar dto) {
+        return clienteService.modificar(id, dto);
     }
 
     @GetMapping("/{id}")

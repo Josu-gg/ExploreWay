@@ -1,19 +1,16 @@
 package org.esfe.DTOs.usuario;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
-// Sin @Data/@ToString a propósito: así la contraseña nunca termina en un log por accidente.
+// Creación de usuario por un administrador: el rol lo elige quien crea la cuenta.
 @Getter
 @Setter
-public class UsuarioGuardar extends UsuarioDatos {
+public class UsuarioGuardar extends UsuarioRegistroDatos {
 
-    // BCrypt solo procesa los primeros 72 bytes, por eso el máximo.
-    @NotBlank(message = "La contraseña es obligatoria.")
-    @Size(min = 8, max = 72, message = "La contraseña debe tener entre 8 y 72 caracteres.")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "La contraseña debe incluir al menos una letra y un número.")
-    private String contra;
+    @NotNull(message = "El rol es obligatorio.")
+    @Positive(message = "El rol no es válido.")
+    private Integer idRol;
 }

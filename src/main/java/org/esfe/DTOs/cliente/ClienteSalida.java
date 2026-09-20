@@ -1,26 +1,24 @@
 package org.esfe.DTOs.cliente;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.esfe.DTOs.persona.PersonaSalida;
 import org.esfe.Modelos.Cliente;
 
 @Getter
-@Builder
-public class ClienteSalida {
+public class ClienteSalida extends PersonaSalida {
 
-    private Integer idCliente;
-    private Integer idEstado;
-    private String nombreEstado;
-    private PersonaSalida persona;
+    private final Integer idCliente;
+    private final Integer idEstado;
+    private final String nombreEstado;
 
-    // Debe llamarse dentro de una transacción (las relaciones son LAZY).
-    public static ClienteSalida desde(Cliente c) {
-        return ClienteSalida.builder()
-                .idCliente(c.getIdCliente())
-                .idEstado(c.getEstado().getIdEstado())
-                .nombreEstado(c.getEstado().getNombreEstado())
-                .persona(PersonaSalida.desde(c.getPersona()))
-                .build();
-    }
+ private ClienteSalida(Cliente c){
+     super(c.getPersona());
+     this.idCliente = c.getIdCliente();
+     this.idEstado = c.getEstado().getId();
+     this.nombreEstado = c.getEstado().getNombreEstado();
+ }
+
+ public static ClienteSalida desde(Cliente c){
+     return new ClienteSalida(c);
+ }
 }

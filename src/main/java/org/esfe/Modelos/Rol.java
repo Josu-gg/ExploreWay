@@ -24,8 +24,4 @@ public class Rol {
     @Size(max = 50, message = "El nombre del rol no puede superar los 50 caracteres")
     @Column(name = "NombreRol", length = 50, nullable = false)
     private String nombreRol;
-
-    @Size(max = 255, message = "La descripción del rol no puede superar los 255 caracteres")
-    @Column(name = "DescripcionRol", length = 255)
-    private String descripcionRol;
 }

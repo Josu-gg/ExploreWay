@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.esfe.DTOs.estado.EstadoGuardar;
 import org.esfe.DTOs.estado.EstadoModificar;
 import org.esfe.DTOs.estado.EstadoSalida;
+import org.esfe.Excepciones.RecursoNoEncontradoException;
 import org.esfe.Modelos.Estado;
 import org.esfe.Repositorios.IEstadoRepository;
 import org.esfe.Servicios.Interfaces.IEstadoService;
@@ -73,6 +74,29 @@ public class EstadoServices implements IEstadoService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Estado obtener(String nombreEstado, String tipoEstado) {
+        return estadoRepository.findByNombreEstadoAndTipoEstado(nombreEstado, tipoEstado)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Falta el estado '" + nombreEstado + "' de tipo '" + tipoEstado + "' en la tabla Estado."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Estado obtenerActivo(String tipoEstado) {
+        return obtener("Activo", tipoEstado);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Estado obtenerDeTipo(Integer idEstado, String tipoEstado) {
+        return estadoRepository.findById(idEstado)
+                .filter(e -> tipoEstado.equals(e.getTipoEstado()))
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "El estado indicado no existe o no es de tipo '" + tipoEstado + "'."));
     }
 
     private EstadoSalida toSalida(Estado estado) {

@@ -1,49 +1,32 @@
 package org.esfe.DTOs.usuario;
 
-import lombok.Builder;
 import lombok.Getter;
+import org.esfe.DTOs.persona.PersonaSalida;
 import org.esfe.Modelos.Usuario;
-
-import java.time.LocalDate;
 
 // Respuesta pública del usuario. Nunca incluye la contraseña ni su hash.
 @Getter
-@Builder
-public class UsuarioSalida {
+public class UsuarioSalida extends PersonaSalida {
 
-    private Integer idUsuario;
-    private String correo;
+    private final Integer idUsuario;
+    private final String correo;
+    private final Integer idRol;
+    private final String nombreRol;
+    private final Integer idEstado;
+    private final String nombreEstado;
 
-    private Integer idRol;
-    private String nombreRol;
-
-    private Integer idEstado;
-    private String nombreEstado;
-
-    private Integer idPersona;
-    private String nombre;
-    private String apellido;
-    private String telefono;
-    private String direccion;
-    private LocalDate fechaNacimiento;
-    private String foto;
+    private UsuarioSalida(Usuario u) {
+        super(u.getPersona());
+        this.idUsuario = u.getIdUsuario();
+        this.correo = u.getCorreo();
+        this.idRol = u.getRol().getId();
+        this.nombreRol = u.getRol().getNombreRol();
+        this.idEstado = u.getEstado().getId();
+        this.nombreEstado = u.getEstado().getNombreEstado();
+    }
 
     // Debe llamarse dentro de una transacción (las relaciones son LAZY).
     public static UsuarioSalida desde(Usuario u) {
-        return UsuarioSalida.builder()
-                .idUsuario(u.getIdUsuario())
-                .correo(u.getCorreo())
-                .idRol(u.getRol().getIdRol())
-                .nombreRol(u.getRol().getNombreRol())
-                .idEstado(u.getEstado().getIdEstado())
-                .nombreEstado(u.getEstado().getNombreEstado())
-                .idPersona(u.getPersona().getIdPersona())
-                .nombre(u.getPersona().getNombre())
-                .apellido(u.getPersona().getApellido())
-                .telefono(u.getPersona().getTelefono())
-                .direccion(u.getPersona().getDireccion())
-                .fechaNacimiento(u.getPersona().getFechaNacimiento())
-                .foto(u.getPersona().getFoto())
-                .build();
+        return new UsuarioSalida(u);
     }
 }

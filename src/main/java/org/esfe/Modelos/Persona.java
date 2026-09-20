@@ -31,7 +31,7 @@ public class Persona {
 
     @NotBlank(message = "El apellido es obligatorio")
     @Size(max = 100, message = "El apellido no puede superar los 100 caracteres")
-    @Column(name = "Apellido", length = 20,nullable = false)
+    @Column(name = "Apellido", length = 100, nullable = false)
     private String apellido;
 
     @NotBlank(message =  "El teléfono es obligatorio")

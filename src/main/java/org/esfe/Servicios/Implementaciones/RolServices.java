@@ -51,7 +51,6 @@ public class RolServices implements IRolService {
     public Optional<RolSalida> modificar(Integer id, RolModificar dto) {
         return rolRepository.findById(id).map(rol -> {
             rol.setNombreRol(dto.getNombreRol());
-            rol.setDescripcionRol(dto.getDescripcionRol());
             return toSalida(rolRepository.save(rol));
         });
     }

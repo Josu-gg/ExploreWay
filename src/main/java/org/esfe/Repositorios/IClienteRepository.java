@@ -13,6 +13,9 @@ public interface IClienteRepository extends JpaRepository<Cliente, Integer> {
     // Carga persona y estado en la misma consulta para evitar el problema N+1.
     @EntityGraph(attributePaths = {"persona", "estado"})
     Optional<Cliente> findById(Integer id);
+    //Permite obtener el cliente del usuario autenticado(Usuario y cliente comparten persona)
+    @EntityGraph(attributePaths = {"persona", "estado"})
+    Optional<Cliente> findByPersona_Id(Integer idPersona);
 
     @EntityGraph(attributePaths = {"persona", "estado"})
     Page<Cliente> findAll(Pageable pageable);

@@ -11,6 +11,10 @@ import lombok.Setter;
 @Setter
 public class UsuarioModificar extends UsuarioDatos {
 
+    @NotNull(message = "El rol es obligatorio.")
+    @Positive(message = "El rol no es válido.")
+    private Integer idRol;
+
     // Permite activar o bloquear la cuenta (estados de tipo "Usuario").
     @NotNull(message = "El estado es obligatorio.")
     @Positive(message = "El estado no es válido.")
