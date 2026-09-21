@@ -12,6 +12,7 @@ public interface IEstadoService {
 
     String TIPO_GENERAL = "General";
     String TIPO_USUARIO = "Usuario";
+    String ESTADO_ACTIVO = "Activo";
 
     // ── CRUD expuesto por EstadoController ────────────────────
     List<EstadoSalida> listar();
