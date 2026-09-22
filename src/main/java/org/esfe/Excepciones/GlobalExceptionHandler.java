@@ -16,9 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// Todas las respuestas de error usan ProblemDetail (RFC 9457), incluido en Spring.
-// Se extiende ResponseEntityExceptionHandler para que los errores propios de Spring MVC
-// (405, 415, JSON mal formado, etc.) también salgan con ese formato.
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -31,6 +29,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConflictoException.class)
     public ProblemDetail manejarConflicto(ConflictoException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(SolicitudInvalidaException.class)
+    public ProblemDetail manejarSolicitudInvalida(SolicitudInvalidaException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     // Respaldo ante condiciones de carrera (dos peticiones con el mismo correo a la vez).

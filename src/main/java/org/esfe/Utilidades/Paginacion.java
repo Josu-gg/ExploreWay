@@ -13,9 +13,9 @@ public final class Paginacion {
     private Paginacion() {
     }
 
-    public static Pageable de(int pagina, int tamano, String campoOrden) {
+    public static Pageable de(int pagina, int tamano, String... camposOrden) {
         int paginaSegura = Math.max(pagina, 0);
         int tamanoSeguro = Math.min(Math.max(tamano, 1), TAMANO_MAXIMO_PAGINA);
-        return PageRequest.of(paginaSegura, tamanoSeguro, Sort.by(campoOrden));
+        return PageRequest.of(paginaSegura, tamanoSeguro, Sort.by(camposOrden));
     }
 }

@@ -23,7 +23,7 @@ public class ImagenDestino {
     @Column(name= "UrlImagen", nullable = false,length = 500)
     private String urlImagen;
 
-    @Column(name ="Descripcion ", length = 255)
+    @Column(name ="Descripcion", length = 255)
     private String descripcion;
 
     @Column(name="EsPrincipal", nullable = false)
