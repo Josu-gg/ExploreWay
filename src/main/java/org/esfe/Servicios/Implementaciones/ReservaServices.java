@@ -20,6 +20,7 @@ import org.esfe.Repositorios.IGuiaDestinoRepository;
 import org.esfe.Repositorios.IGuiaRepository;
 import org.esfe.Repositorios.IReservaRepository;
 import org.esfe.Servicios.Interfaces.IEstadoService;
+import org.esfe.Servicios.Interfaces.IHistorialReservaService;
 import org.esfe.Servicios.Interfaces.IReservaService;
 import org.esfe.Utilidades.Paginacion;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,7 @@ public class ReservaServices implements IReservaService {
     private final IGuiaActividadRepository guiaActividadRepository;
     private final IDisponibilidadGuiaRepository disponibilidadGuiaRepository;
     private final IEstadoService estadoService;
+    private final IHistorialReservaService historialReservaService;
 
     @Override
     @Transactional
@@ -82,7 +84,9 @@ public class ReservaServices implements IReservaService {
         reserva.setEstado(estadoService.obtener(
                 IEstadoService.ESTADO_PENDIENTE, IEstadoService.TIPO_RESERVA));
 
-        return ReservaSalida.desde(reservaRepository.save(reserva));
+        Reserva guardada = reservaRepository.save(reserva);
+        historialReservaService.registrar(guardada, null, guardada.getGuia(), "Reserva creada.");
+        return ReservaSalida.desde(guardada);
     }
 
     @Override
@@ -137,7 +141,10 @@ public class ReservaServices implements IReservaService {
         }
 
         reserva.setEstado(nuevoEstado);
-        return ReservaSalida.desde(reservaRepository.save(reserva));
+        Reserva guardada = reservaRepository.save(reserva);
+        historialReservaService.registrar(guardada, null, null,
+                "Cambio de estado: " + actual + " -> " + nuevoEstado.getNombreEstado());
+        return ReservaSalida.desde(guardada);
     }
 
     @Override
@@ -155,7 +162,10 @@ public class ReservaServices implements IReservaService {
 
         reserva.setEstado(estadoService.obtener(
                 IEstadoService.ESTADO_CANCELADA, IEstadoService.TIPO_RESERVA));
-        return ReservaSalida.desde(reservaRepository.save(reserva));
+        Reserva guardada = reservaRepository.save(reserva);
+        historialReservaService.registrar(guardada, null, null,
+                "Reserva cancelada (estado anterior: " + actual + ").");
+        return ReservaSalida.desde(guardada);
     }
 
     private Reserva buscar(Integer id) {
