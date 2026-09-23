@@ -1,0 +1,56 @@
+package org.esfe.Repositorios;
+
+import org.esfe.Modelos.Reserva;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
+public interface IReservaRepository extends JpaRepository<Reserva, Integer> {
+
+    String GRAFO_COMPLETO = "cliente, cliente.persona, guia, guia.persona, "
+            + "destinoActividad, destinoActividad.destino, destinoActividad.actividad, estado";
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+            "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
+    Optional<Reserva> findById(Integer id);
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+            "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
+    Page<Reserva> findAll(Pageable pageable);
+
+    // Reservas del cliente autenticado.
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+            "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
+    Page<Reserva> findByCliente_IdCliente(Integer idCliente, Pageable pageable);
+
+    // Agenda del guía.
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+            "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
+    Page<Reserva> findByGuia_Id(Integer idGuia, Pageable pageable);
+
+    @Query("""
+            SELECT COUNT(r) > 0 FROM Reserva r
+            WHERE r.guia.id = :idGuia
+              AND r.fechaRecorrido = :fecha
+              AND r.estado.nombreEstado IN :estadosVigentes
+              AND r.horaInicio < :horaFin
+              AND r.horaFin > :horaInicio
+              AND (:idExcluir IS NULL OR r.idReserva <> :idExcluir)
+            """)
+    boolean existeSolapamiento(@Param("idGuia") Integer idGuia,
+                               @Param("fecha") LocalDate fecha,
+                               @Param("horaInicio") LocalTime horaInicio,
+                               @Param("horaFin") LocalTime horaFin,
+                               @Param("estadosVigentes") List<String> estadosVigentes,
+                               @Param("idExcluir") Integer idExcluir);
+
+    boolean existsByIdReservaAndCliente_IdCliente(Integer idReserva, Integer idCliente);
+}
