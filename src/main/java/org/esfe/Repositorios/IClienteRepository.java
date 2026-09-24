@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -19,4 +21,6 @@ public interface IClienteRepository extends JpaRepository<Cliente, Integer> {
 
     @EntityGraph(attributePaths = {"persona", "estado"})
     Page<Cliente> findAll(Pageable pageable);
+    @Query("SELECT c FROM Cliente c, Usuario u WHERE u.persona = c.persona AND u.correo = :correo")
+    Optional<Cliente> findByCorreoUsuario(@Param("correo") String correo);
 }
