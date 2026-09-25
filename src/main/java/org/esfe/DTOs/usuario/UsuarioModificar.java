@@ -15,7 +15,7 @@ public class UsuarioModificar extends UsuarioDatos {
     @Positive(message = "El rol no es válido.")
     private Integer idRol;
 
-    // Permite activar o bloquear la cuenta (estados de tipo "Usuario").
+    // Permite activar o bloquear la cuenta (estados de tipo "General").
     @NotNull(message = "El estado es obligatorio.")
     @Positive(message = "El estado no es válido.")
     private Integer idEstado;

@@ -528,3 +528,7 @@ bin/
 out/
 ### Environment variables ###
 .env
+
+.postman/
+postman/
+.claude/

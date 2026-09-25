@@ -55,7 +55,7 @@ public class UsuarioServices implements IUsuarioService {
         usuario.setCorreo(correo);
         usuario.setContra(passwordEncoder.encode(datos.getContra()));
         usuario.setRol(rol);
-        usuario.setEstado(estadoService.obtenerActivo(IEstadoService.TIPO_USUARIO));
+        usuario.setEstado(estadoService.obtenerActivo(IEstadoService.TIPO_GENERAL));
         usuario.setPersona(persona);
 
         return usuarioRepository.save(usuario);
@@ -74,8 +74,8 @@ public class UsuarioServices implements IUsuarioService {
 
         usuario.setCorreo(correo);
         usuario.setRol(buscarRol(dto.getIdRol()));
-        // No se puede asignar un estado de Reserva, Pago, etc.: debe ser de tipo "Usuario".
-        usuario.setEstado(estadoService.obtenerDeTipo(dto.getIdEstado(), IEstadoService.TIPO_USUARIO));
+        // No se puede asignar un estado de Reserva, Pago, etc.: debe ser de tipo "General".
+        usuario.setEstado(estadoService.obtenerDeTipo(dto.getIdEstado(), IEstadoService.TIPO_GENERAL));
         personaService.actualizar(usuario.getPersona(), dto);
 
         // saveAndFlush para que un choque de unicidad falle aquí y no al cerrar la transacción.

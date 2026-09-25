@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface IEstadoService {
 
     String TIPO_GENERAL = "General";
-    String TIPO_USUARIO = "Usuario";
     String ESTADO_ACTIVO = "Activo";
     String TIPO_RESERVA = "Reserva";
     String ESTADO_PENDIENTE = "Pendiente";
