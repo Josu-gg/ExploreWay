@@ -8,8 +8,9 @@ import java.time.Instant;
 @Getter
 @AllArgsConstructor
 public class TokenSalida {
+
     private final String token;
-    private final String tipo;
+    private final String tipoToken;
     private final Instant expiraEn;
     private final String correo;
     private final String rol;

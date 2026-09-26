@@ -38,6 +38,9 @@ public class SecurityConfig {
                         .requestMatchers(RUTAS_SWAGGER).permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/usuarios/**").hasRole("Admin")
+                        .requestMatchers("/api/estados/**", "/api/roles/**", "/api/personas/**").hasRole("Admin")
+                        .requestMatchers(HttpMethod.GET, "/api/destinos/**", "/api/actividades/**", "/api/guias/**").authenticated()
+                        .requestMatchers("/api/destinos/**", "/api/actividades/**", "/api/guias/**").hasRole("Admin")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
