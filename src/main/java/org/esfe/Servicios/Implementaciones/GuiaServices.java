@@ -25,6 +25,9 @@ public class GuiaServices implements IGuiaService {
     private final IGuiaRepository guiaRepository;
     private final IPersonaRepository personaRepository;
     private final IEstadoRepository estadoRepository;
+    private final org.esfe.Repositorios.IRolRepository rolRepository;
+    private final org.esfe.Servicios.Interfaces.IUsuarioService usuarioService;
+    private final org.esfe.Servicios.Interfaces.IEstadoService estadoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -83,6 +86,28 @@ public class GuiaServices implements IGuiaService {
 
         Guia guardado = guiaRepository.save(guia);
         return toSalida(guardado);
+    }
+
+    // Persona y Usuario se crean primero; si falla el Guia se revierte todo.
+    @Override
+    @Transactional
+    public GuiaSalida registrar(org.esfe.DTOs.guia.GuiaRegistroGuardar dto) {
+        org.esfe.Modelos.Rol rolGuia = rolRepository.findByNombreRol("Guia")
+                .orElseThrow(() -> new IllegalStateException("Falta el rol Guia en la tabla Rol."));
+
+        org.esfe.Modelos.Usuario usuario = usuarioService.crearConRol(dto, rolGuia);
+
+        Guia guia = new Guia();
+        guia.setPersona(usuario.getPersona());
+        guia.setBiografia(dto.getBiografia());
+        guia.setExperiencia(dto.getExperiencia());
+        guia.setEstudios(dto.getEstudios());
+        guia.setPrimerosAuxilios(dto.getPrimerosAuxilios());
+        guia.setEstadoDisponibilidad(dto.getEstadoDisponibilidad());
+        guia.setCalificacionPromedio(BigDecimal.ZERO);
+        guia.setEstado(estadoService.obtenerActivo(org.esfe.Servicios.Interfaces.IEstadoService.TIPO_GENERAL));
+
+        return toSalida(guiaRepository.save(guia));
     }
 
     @Override

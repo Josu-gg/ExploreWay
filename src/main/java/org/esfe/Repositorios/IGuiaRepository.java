@@ -10,4 +10,8 @@ public interface IGuiaRepository extends JpaRepository<Guia, Integer> {
     boolean existsByPersona_Id(Integer idPersona);
     List<Guia> findByEstado_Id(Integer idEstado);
     List<Guia> findByEstadoDisponibilidad(Boolean estadoDisponibilidad);
+
+    // Guía del usuario autenticado (Usuario y Guia comparten persona).
+    @org.springframework.data.jpa.repository.Query("SELECT g FROM Guia g, Usuario u WHERE u.persona = g.persona AND u.correo = :correo")
+    Optional<Guia> findByCorreoUsuario(@org.springframework.data.repository.query.Param("correo") String correo);
 }

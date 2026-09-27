@@ -13,6 +13,8 @@ public interface IGuiaService {
     Optional<GuiaSalida> buscarPorId(Integer id);
     Optional<GuiaSalida> buscarPorPersona(Integer idPersona);
     GuiaSalida guardar(GuiaGuardar dto);
+    // Crea Persona + Usuario (rol Guia) + Guia en una sola transacción.
+    GuiaSalida registrar(org.esfe.DTOs.guia.GuiaRegistroGuardar dto);
     Optional<GuiaSalida> modificar(Integer id, GuiaModificar dto);
     boolean eliminar(Integer id);
 }

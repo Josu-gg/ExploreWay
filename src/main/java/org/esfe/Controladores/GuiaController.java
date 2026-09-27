@@ -50,6 +50,11 @@ public class GuiaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
 
+    @PostMapping("/registro")
+    public ResponseEntity<GuiaSalida> registrar(@Valid @RequestBody org.esfe.DTOs.guia.GuiaRegistroGuardar dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(guiaService.registrar(dto));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<GuiaSalida> modificar(@PathVariable Integer id, @Valid @RequestBody GuiaModificar dto) {
         return guiaService.modificar(id, dto)

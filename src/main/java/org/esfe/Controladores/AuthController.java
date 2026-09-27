@@ -5,8 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.esfe.DTOs.auth.LoginGuardar;
 import org.esfe.DTOs.auth.TokenSalida;
-import org.esfe.DTOs.cliente.ClienteGuardar;
-import org.esfe.DTOs.cliente.ClienteSalida;
+
 import org.esfe.DTOs.usuario.UsuarioSalida;
 import org.esfe.Servicios.Interfaces.IAuthService;
 import org.esfe.Servicios.Interfaces.IClienteService;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 
 import java.net.URI;
 
@@ -29,16 +28,6 @@ public class AuthController {
     private final IAuthService authService;
     private final IClienteService clienteService;
 
-    @PostMapping("/registro")
-    @Operation(summary = "Registrar un cliente (el rol Cliente lo asigna el servidor)")
-    public ResponseEntity<ClienteSalida> registrar(@Valid @RequestBody ClienteGuardar dto) {
-        ClienteSalida creado = clienteService.registrar(dto);
-        URI ubicacion = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/clientes/{id}")
-                .buildAndExpand(creado.getIdCliente())
-                .toUri();
-        return ResponseEntity.created(ubicacion).body(creado);
-    }
 
     @PostMapping("/login")
     @Operation(summary = "Iniciar sesión con correo y contraseña")

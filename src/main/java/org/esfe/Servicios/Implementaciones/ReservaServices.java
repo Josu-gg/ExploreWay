@@ -23,6 +23,8 @@ import org.esfe.Servicios.Interfaces.IEstadoService;
 import org.esfe.Servicios.Interfaces.IHistorialReservaService;
 import org.esfe.Servicios.Interfaces.IReservaService;
 import org.esfe.Utilidades.Paginacion;
+import org.esfe.Utilidades.UsuarioActual;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,10 +52,19 @@ public class ReservaServices implements IReservaService {
     private final IDisponibilidadGuiaRepository disponibilidadGuiaRepository;
     private final IEstadoService estadoService;
     private final IHistorialReservaService historialReservaService;
+    private final UsuarioActual usuarioActual;
 
     @Override
     @Transactional
     public ReservaSalida crear(ReservaGuardar dto) {
+        // Un cliente solo reserva a su nombre; el Administrador puede reservar por cualquiera.
+        if (usuarioActual.esCliente()) {
+            if (!usuarioActual.idCliente().equals(dto.getIdCliente())) {
+                throw new AccessDeniedException("Solo puedes crear reservas a tu nombre.");
+            }
+        } else {
+            usuarioActual.exigirAdmin();
+        }
         Cliente cliente = clienteRepository.findById(dto.getIdCliente())
                 .orElseThrow(() -> new RecursoNoEncontradoException("El cliente indicado no existe."));
         Guia guia = guiaRepository.findById(dto.getIdGuia())
@@ -92,12 +103,17 @@ public class ReservaServices implements IReservaService {
     @Override
     @Transactional(readOnly = true)
     public ReservaSalida obtenerPorId(Integer id) {
-        return ReservaSalida.desde(buscar(id));
+        Reserva reserva = buscar(id);
+        exigirParticipante(reserva);
+        return ReservaSalida.desde(reserva);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaSalida> listarPorCliente(Integer idCliente, int pagina, int tamano) {
+        if (!usuarioActual.esAdmin() && !(usuarioActual.esCliente() && usuarioActual.idCliente().equals(idCliente))) {
+            throw new AccessDeniedException("Solo puedes consultar tus propias reservas.");
+        }
         if (!clienteRepository.existsById(idCliente)) {
             throw new RecursoNoEncontradoException("Cliente no encontrado.");
         }
@@ -109,6 +125,9 @@ public class ReservaServices implements IReservaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaSalida> listarPorGuia(Integer idGuia, int pagina, int tamano) {
+        if (!usuarioActual.esAdmin() && !(usuarioActual.esGuia() && usuarioActual.idGuia().equals(idGuia))) {
+            throw new AccessDeniedException("Solo puedes consultar tu propia agenda.");
+        }
         if (!guiaRepository.existsById(idGuia)) {
             throw new RecursoNoEncontradoException("Guía no encontrado.");
         }
@@ -120,6 +139,7 @@ public class ReservaServices implements IReservaService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReservaSalida> listar(int pagina, int tamano) {
+        usuarioActual.exigirAdmin();
         return reservaRepository
                 .findAll(Paginacion.de(pagina, tamano, "idReserva"))
                 .map(ReservaSalida::desde);
@@ -128,6 +148,7 @@ public class ReservaServices implements IReservaService {
     @Override
     @Transactional
     public ReservaSalida cambiarEstado(Integer id, CambioEstadoModificar dto) {
+        usuarioActual.exigirAdmin();
         Reserva reserva = buscar(id);
         Estado nuevoEstado = estadoService.obtenerDeTipo(dto.getIdEstado(), IEstadoService.TIPO_RESERVA);
         String actual = reserva.getEstado().getNombreEstado();
@@ -151,6 +172,11 @@ public class ReservaServices implements IReservaService {
     @Transactional
     public ReservaSalida cancelar(Integer id) {
         Reserva reserva = buscar(id);
+        // Cancelan el Administrador o el cliente dueño de la reserva.
+        if (!usuarioActual.esAdmin()
+                && !(usuarioActual.esCliente() && usuarioActual.idCliente().equals(reserva.getCliente().getIdCliente()))) {
+            throw new AccessDeniedException("Solo puedes cancelar tus propias reservas.");
+        }
         String actual = reserva.getEstado().getNombreEstado();
 
         if (esFinal(actual)) {
@@ -171,6 +197,20 @@ public class ReservaServices implements IReservaService {
     private Reserva buscar(Integer id) {
         return reservaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada."));
+    }
+
+    // Ven la reserva el Administrador, su cliente y su guía.
+    private void exigirParticipante(Reserva reserva) {
+        if (usuarioActual.esAdmin()) {
+            return;
+        }
+        boolean esSuCliente = usuarioActual.esCliente()
+                && usuarioActual.idCliente().equals(reserva.getCliente().getIdCliente());
+        boolean esSuGuia = usuarioActual.esGuia()
+                && usuarioActual.idGuia().equals(reserva.getGuia().getId());
+        if (!esSuCliente && !esSuGuia) {
+            throw new AccessDeniedException("No tienes acceso a esta reserva.");
+        }
     }
 
     private static boolean esFinal(String nombreEstado) {
