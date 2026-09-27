@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/registro", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/registro", "/api/auth/login", "/api/clientes/registro").permitAll()
                         .requestMatchers(RUTAS_SWAGGER).permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/usuarios/**").hasRole("Admin")
