@@ -16,7 +16,7 @@ import lombok.Setter;
 // Destinos en los que trabaja un guía.
 // Es independiente de GuiaActividad: la compatibilidad guía + destino + actividad se valida al reservar.
 @Entity
-@Table(name = "guiaDestino",
+@Table(name = "guiadestino",
         uniqueConstraints = @UniqueConstraint(name = "UQ_GuiaDestino",
                 columnNames = {"IdGuia", "IdDestino"}))
 @Getter

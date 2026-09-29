@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "disponibilidadGuia",
+@Table(name = "disponibilidadguia",
         uniqueConstraints = @UniqueConstraint(name = "UQ_DisponibilidadGuia",
                 columnNames = {"IdGuia", "Fecha", "HoraInicio", "HoraFin"}))
 @Getter

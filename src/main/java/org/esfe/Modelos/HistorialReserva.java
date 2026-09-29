@@ -16,7 +16,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "historialReserva")
+@Table(name = "historialreserva")
 @Getter
 @Setter
 @NoArgsConstructor
