@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import static jakarta.persistence.GenerationType.*;
 
 @Entity
-@Table(name = "Persona")
+@Table(name = "persona")
 @Getter
 @Setter
 @NoArgsConstructor

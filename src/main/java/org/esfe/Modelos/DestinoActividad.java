@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 // Oferta de una actividad en un destino: duración y precio base propios de esa combinación.
 // Una misma actividad (p. ej. "Senderismo") puede durar y costar distinto según el destino.
 @Entity
-@Table(name = "DestinoActividad",
+@Table(name = "destinoActividad",
         uniqueConstraints = @UniqueConstraint(name = "UQ_DestinoActividad",
                 columnNames = {"IdDestino", "IdActividad"}))
 @Getter

@@ -17,7 +17,7 @@ import lombok.Setter;
 // Se usan @Getter/@Setter (no @Data) para evitar toString/equals que carguen relaciones
 // LAZY o impriman el hash de la contraseña en logs.
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 @Getter
 @Setter
 @NoArgsConstructor

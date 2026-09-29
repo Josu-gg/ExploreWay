@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "Reserva")
+@Table(name = "reserva")
 @Getter
 @Setter
 @NoArgsConstructor
