@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "rol")
+@Table(name = "Rol")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,4 +24,8 @@ public class Rol {
     @Size(max = 50, message = "El nombre del rol no puede superar los 50 caracteres")
     @Column(name = "NombreRol", length = 50, nullable = false)
     private String nombreRol;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "IdEstado", nullable = false)
+    private Estado estado;
 }

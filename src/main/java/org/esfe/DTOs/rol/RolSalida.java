@@ -12,4 +12,6 @@ import lombok.Setter;
 public class RolSalida {
     private Integer idRol;
     private String nombreRol;
+    private Integer idEstado;
+    private String nombreEstado;
 }
