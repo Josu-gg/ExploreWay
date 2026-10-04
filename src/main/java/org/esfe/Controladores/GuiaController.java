@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.esfe.DTOs.guia.GuiaGuardar;
 import org.esfe.DTOs.guia.GuiaModificar;
+import org.esfe.DTOs.guia.GuiaPerfilModificar;
 import org.esfe.DTOs.guia.GuiaSalida;
 import org.esfe.Servicios.Interfaces.IGuiaService;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,11 @@ public class GuiaController {
     @PostMapping("/registro")
     public ResponseEntity<GuiaSalida> registrar(@Valid @RequestBody org.esfe.DTOs.guia.GuiaRegistroGuardar dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(guiaService.registrar(dto));
+    }
+
+    @PutMapping("/mi-perfil")
+    public ResponseEntity<GuiaSalida> modificarMiPerfil(@Valid @RequestBody GuiaPerfilModificar dto) {
+        return ResponseEntity.ok(guiaService.modificarMiPerfil(dto));
     }
 
     @PutMapping("/{id}")

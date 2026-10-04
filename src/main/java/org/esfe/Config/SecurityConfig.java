@@ -38,7 +38,15 @@ public class SecurityConfig {
                         .requestMatchers(RUTAS_SWAGGER).permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/usuarios/**").hasRole("Admin")
+                        // El catálogo de estados es de solo lectura para cualquier usuario autenticado
+                        // (el guía necesita conocer los Id de estado); escribirlo sigue siendo solo Admin.
+                        .requestMatchers(HttpMethod.GET, "/api/estados/**").authenticated()
                         .requestMatchers("/api/estados/**", "/api/roles/**", "/api/personas/**").hasRole("Admin")
+                        // Las asignaciones guía-actividad/guía-destino las gestiona el Admin; todos pueden consultarlas.
+                        .requestMatchers(HttpMethod.GET, "/api/guia-actividades/**", "/api/guia-destinos/**").authenticated()
+                        .requestMatchers("/api/guia-actividades/**", "/api/guia-destinos/**").hasRole("Admin")
+                        // El guía edita solo su propio perfil (el servicio toma el Id desde el token).
+                        .requestMatchers(HttpMethod.PUT, "/api/guias/mi-perfil").hasRole("Guia")
                         .requestMatchers(HttpMethod.GET, "/api/destinos/**", "/api/actividades/**", "/api/guias/**").authenticated()
                         .requestMatchers("/api/destinos/**", "/api/actividades/**", "/api/guias/**").hasRole("Admin")
                         .anyRequest().authenticated())

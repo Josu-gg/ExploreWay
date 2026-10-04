@@ -50,4 +50,8 @@ public class Persona {
     @Size(max = 500, message = "La foto no debe superar los 500 caracteres")
     @Column(name = "Foto", length = 500)
     private String foto;
+
+    // Lado inverso de Usuario.persona (no agrega columna): permite leer el correo de contacto.
+    @OneToOne(mappedBy = "persona", fetch = FetchType.LAZY)
+    private Usuario usuario;
 }

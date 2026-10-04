@@ -16,6 +16,8 @@ public class ReservaSalida {
     private final Integer idCliente;
     private final String nombreCliente;
     private final String apellidoCliente;
+    private final String telefonoCliente;
+    private final String correoCliente;
     private final Integer idGuia;
     private final String nombreGuia;
     private final String apellidoGuia;
@@ -38,6 +40,9 @@ public class ReservaSalida {
         this.idCliente = r.getCliente().getIdCliente();
         this.nombreCliente = r.getCliente().getPersona().getNombre();
         this.apellidoCliente = r.getCliente().getPersona().getApellido();
+        this.telefonoCliente = r.getCliente().getPersona().getTelefono();
+        this.correoCliente = r.getCliente().getPersona().getUsuario() != null
+                ? r.getCliente().getPersona().getUsuario().getCorreo() : null;
         this.idGuia = r.getGuia().getId();
         this.nombreGuia = r.getGuia().getPersona().getNombre();
         this.apellidoGuia = r.getGuia().getPersona().getApellido();

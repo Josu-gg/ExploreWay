@@ -2,6 +2,7 @@ package org.esfe.Servicios.Interfaces;
 
 import org.esfe.DTOs.guia.GuiaGuardar;
 import org.esfe.DTOs.guia.GuiaModificar;
+import org.esfe.DTOs.guia.GuiaPerfilModificar;
 import  org.esfe.DTOs.guia.GuiaSalida;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public interface IGuiaService {
     // Crea Persona + Usuario (rol Guia) + Guia en una sola transacción.
     GuiaSalida registrar(org.esfe.DTOs.guia.GuiaRegistroGuardar dto);
     Optional<GuiaSalida> modificar(Integer id, GuiaModificar dto);
+    // El guía autenticado edita su propio perfil (sin tocar su estado).
+    GuiaSalida modificarMiPerfil(GuiaPerfilModificar dto);
     boolean eliminar(Integer id);
 }

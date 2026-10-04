@@ -18,21 +18,21 @@ public interface IReservaRepository extends JpaRepository<Reserva, Integer> {
     String GRAFO_COMPLETO = "cliente, cliente.persona, guia, guia.persona, "
             + "destinoActividad, destinoActividad.destino, destinoActividad.actividad, estado";
 
-    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "cliente.persona.usuario", "guia", "guia.persona",
             "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
     Optional<Reserva> findById(Integer id);
 
-    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "cliente.persona.usuario", "guia", "guia.persona",
             "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
     Page<Reserva> findAll(Pageable pageable);
 
     // Reservas del cliente autenticado.
-    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "cliente.persona.usuario", "guia", "guia.persona",
             "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
     Page<Reserva> findByCliente_IdCliente(Integer idCliente, Pageable pageable);
 
     // Agenda del guía.
-    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "guia", "guia.persona",
+    @EntityGraph(attributePaths = {"cliente", "cliente.persona", "cliente.persona.usuario", "guia", "guia.persona",
             "destinoActividad", "destinoActividad.destino", "destinoActividad.actividad", "estado"})
     Page<Reserva> findByGuia_Id(Integer idGuia, Pageable pageable);
 

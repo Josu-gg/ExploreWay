@@ -3,6 +3,7 @@ package org.esfe.Servicios.Implementaciones;
 import lombok.RequiredArgsConstructor;
 import org.esfe.DTOs.guia.GuiaGuardar;
 import org.esfe.DTOs.guia.GuiaModificar;
+import org.esfe.DTOs.guia.GuiaPerfilModificar;
 import org.esfe.DTOs.guia.GuiaSalida;
 import org.esfe.Modelos.Estado;
 import org.esfe.Modelos.Guia;
@@ -11,6 +12,7 @@ import org.esfe.Repositorios.IEstadoRepository;
 import org.esfe.Repositorios.IGuiaRepository;
 import org.esfe.Repositorios.IPersonaRepository;
 import org.esfe.Servicios.Interfaces.IGuiaService;
+import org.esfe.Utilidades.UsuarioActual;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class GuiaServices implements IGuiaService {
     private final org.esfe.Repositorios.IRolRepository rolRepository;
     private final org.esfe.Servicios.Interfaces.IUsuarioService usuarioService;
     private final org.esfe.Servicios.Interfaces.IEstadoService estadoService;
+    private final UsuarioActual usuarioActual;
 
     @Override
     @Transactional(readOnly = true)
@@ -126,6 +129,21 @@ public class GuiaServices implements IGuiaService {
 
             return toSalida(guiaRepository.save(guia));
         });
+    }
+
+    @Override
+    @Transactional
+    public GuiaSalida modificarMiPerfil(GuiaPerfilModificar dto) {
+        Guia guia = guiaRepository.findById(usuarioActual.idGuia())
+                .orElseThrow(() -> new IllegalArgumentException("El guía indicado no existe"));
+
+        guia.setBiografia(dto.getBiografia());
+        guia.setExperiencia(dto.getExperiencia());
+        guia.setEstudios(dto.getEstudios());
+        guia.setPrimerosAuxilios(dto.getPrimerosAuxilios());
+        guia.setEstadoDisponibilidad(dto.getEstadoDisponibilidad());
+
+        return toSalida(guiaRepository.save(guia));
     }
 
     @Override

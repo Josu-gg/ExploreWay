@@ -16,6 +16,8 @@ import org.esfe.Repositorios.IGuiaRepository;
 import org.esfe.Servicios.Interfaces.IDisponibilidadGuiaService;
 import org.esfe.Servicios.Interfaces.IEstadoService;
 import org.esfe.Utilidades.Paginacion;
+import org.esfe.Utilidades.UsuarioActual;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class DisponibilidadGuiaServices implements IDisponibilidadGuiaService {
     private final IDisponibilidadGuiaRepository disponibilidadGuiaRepository;
     private final IGuiaRepository guiaRepository;
     private final IEstadoService estadoService;
+    private final UsuarioActual usuarioActual;
 
     @Override
     @Transactional(readOnly = true)
@@ -63,6 +66,7 @@ public class DisponibilidadGuiaServices implements IDisponibilidadGuiaService {
     @Override
     @Transactional
     public DisponibilidadGuiaSalida crear(DisponibilidadGuiaGuardar dto) {
+        exigirAdminODueno(dto.getIdGuia());
         validarHorario(dto);
 
         Guia guia = guiaRepository.findById(dto.getIdGuia())
@@ -84,6 +88,7 @@ public class DisponibilidadGuiaServices implements IDisponibilidadGuiaService {
     @Transactional
     public DisponibilidadGuiaSalida modificar(Integer id, DisponibilidadGuiaModificar dto) {
         DisponibilidadGuia disponibilidad = buscar(id);
+        exigirAdminODueno(disponibilidad.getGuia().getId());
         validarHorario(dto);
 
         // Solo estados de tipo "General": evita asignar estados de Reserva, Usuario, etc.
@@ -111,11 +116,19 @@ public class DisponibilidadGuiaServices implements IDisponibilidadGuiaService {
     @Override
     @Transactional
     public void eliminar(Integer id) {
-        if (!disponibilidadGuiaRepository.existsById(id)) {
-            throw new RecursoNoEncontradoException("Disponibilidad no encontrada.");
-        }
+        exigirAdminODueno(buscar(id).getGuia().getId());
         // TODO (Reserva): impedir el borrado si hay reservas activas del guía dentro de esta franja.
         disponibilidadGuiaRepository.deleteById(id);
+    }
+
+    // Escriben la disponibilidad el Administrador o el propio guía (nunca un cliente ni otro guía).
+    private void exigirAdminODueno(Integer idGuia) {
+        if (usuarioActual.esAdmin()) {
+            return;
+        }
+        if (!(usuarioActual.esGuia() && usuarioActual.idGuia().equals(idGuia))) {
+            throw new AccessDeniedException("Solo puedes gestionar tu propia disponibilidad.");
+        }
     }
 
     private DisponibilidadGuia buscar(Integer id) {

@@ -148,10 +148,16 @@ public class ReservaServices implements IReservaService {
     @Override
     @Transactional
     public ReservaSalida cambiarEstado(Integer id, CambioEstadoModificar dto) {
-        usuarioActual.exigirAdmin();
+        // Cambian el estado el Administrador o el guía asignado a la reserva.
+        if (!usuarioActual.esAdmin() && !usuarioActual.esGuia()) {
+            throw new AccessDeniedException("Solo el Administrador o el guía asignado pueden cambiar el estado.");
+        }
         Reserva reserva = buscar(id);
         Estado nuevoEstado = estadoService.obtenerDeTipo(dto.getIdEstado(), IEstadoService.TIPO_RESERVA);
         String actual = reserva.getEstado().getNombreEstado();
+        if (!usuarioActual.esAdmin()) {
+            exigirTransicionDeGuia(reserva, actual, nuevoEstado.getNombreEstado());
+        }
 
         if (esFinal(actual)) {
             throw new ConflictoException("La reserva ya está " + actual.toLowerCase() + " y no puede cambiar de estado.");
@@ -192,6 +198,20 @@ public class ReservaServices implements IReservaService {
         historialReservaService.registrar(guardada, null, null,
                 "Reserva cancelada (estado anterior: " + actual + ").");
         return ReservaSalida.desde(guardada);
+    }
+
+    // El guía solo gestiona sus reservas y solo avanza el flujo: Pendiente -> Aceptada -> Completada.
+    private void exigirTransicionDeGuia(Reserva reserva, String actual, String nuevo) {
+        if (!usuarioActual.idGuia().equals(reserva.getGuia().getId())) {
+            throw new AccessDeniedException("Solo puedes cambiar el estado de tus propias reservas.");
+        }
+        boolean confirma = IEstadoService.ESTADO_PENDIENTE.equals(actual)
+                && IEstadoService.ESTADO_CONFIRMADA.equals(nuevo);
+        boolean completa = IEstadoService.ESTADO_CONFIRMADA.equals(actual)
+                && IEstadoService.ESTADO_COMPLETADA.equals(nuevo);
+        if (!confirma && !completa && !esFinal(actual)) {
+            throw new SolicitudInvalidaException("Como guía solo puedes confirmar una reserva pendiente o completar una aceptada.");
+        }
     }
 
     private Reserva buscar(Integer id) {
