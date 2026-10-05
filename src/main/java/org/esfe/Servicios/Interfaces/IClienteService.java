@@ -11,6 +11,8 @@ public interface IClienteService {
 
     ClienteSalida obtenerPorId(Integer id);
 
+    ClienteSalida obtenerMiPerfil();
+
     Page<ClienteSalida> listar(int pagina, int tamano);
 
     ClienteSalida modificar(Integer id, ClienteModificar dto);

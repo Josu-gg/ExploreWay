@@ -51,6 +51,12 @@ public class ClienteController {
         return clienteService.modificar(id, dto);
     }
 
+    @GetMapping("/mi-perfil")
+    @Operation(summary = "Obtener el cliente autenticado")
+    public ClienteSalida miPerfil() {
+        return clienteService.obtenerMiPerfil();
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un cliente por Id")
     public ClienteSalida obtenerPorId(@PathVariable Integer id) {

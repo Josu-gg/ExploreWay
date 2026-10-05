@@ -73,6 +73,12 @@ public class ClienteServices implements IClienteService {
 
     @Override
     @Transactional(readOnly = true)
+    public ClienteSalida obtenerMiPerfil() {
+        return obtenerPorId(usuarioActual.idCliente());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ClienteSalida obtenerPorId(Integer id) {
         exigirAdminOPropietario(id);
         return clienteRepository.findById(id)
