@@ -24,4 +24,5 @@ public class GuiaSalida {
     private BigDecimal calificacionPromedio;
     private Integer idEstado;
     private String nombreEstado;
+    private String foto;
 }

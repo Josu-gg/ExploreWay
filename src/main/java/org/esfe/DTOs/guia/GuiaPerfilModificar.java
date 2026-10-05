@@ -23,4 +23,8 @@ public class GuiaPerfilModificar {
 
     @NotNull(message = "Debe indicarse la disponibilidad")
     private Boolean estadoDisponibilidad;
+
+    // URL de la foto de perfil (Cloudinary). null = sin cambios; vacío = quitar la foto.
+    @Size(max = 500, message = "La URL de la foto no puede superar 500 caracteres")
+    private String foto;
 }

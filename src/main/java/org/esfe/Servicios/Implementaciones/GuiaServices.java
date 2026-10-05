@@ -142,6 +142,9 @@ public class GuiaServices implements IGuiaService {
         guia.setEstudios(dto.getEstudios());
         guia.setPrimerosAuxilios(dto.getPrimerosAuxilios());
         guia.setEstadoDisponibilidad(dto.getEstadoDisponibilidad());
+        if (dto.getFoto() != null) {
+            guia.getPersona().setFoto(dto.getFoto().isBlank() ? null : dto.getFoto().trim());
+        }
 
         return toSalida(guiaRepository.save(guia));
     }
@@ -170,6 +173,7 @@ public class GuiaServices implements IGuiaService {
         dto.setCalificacionPromedio(guia.getCalificacionPromedio());
         dto.setIdEstado(guia.getEstado().getId());
         dto.setNombreEstado(guia.getEstado().getNombreEstado());
+        dto.setFoto(guia.getPersona().getFoto());
         return dto;
     }
 }
