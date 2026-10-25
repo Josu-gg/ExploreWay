@@ -1,4 +1,5 @@
 package org.esfe.Servicios.Implementaciones;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -106,4 +108,31 @@ public class GuiaServiceTest {
                 .andExpect(jsonPath("$.estadoDisponibilidad").value(false))
                 .andExpect(jsonPath("$.foto").value("https://res.cloudinary.com/exploreway/marta-nueva.jpg"));
     }
+    //CP-64 Consultar/Listar Guías
+    @Test
+    void cp64_listarGuias_retorna200ConListadoDeGuias() throws Exception {
+        GuiaSalida guiaMarta = new GuiaSalida(
+                6, 20, "Marta", "Hernández",
+                "Guía con experiencia en senderismo y ecoturismo",
+                "6 años guiando recorridos en Cerro Verde", "Técnico en Turismo",
+                true, true, new BigDecimal("4.50"),
+                1, "Activo", "https://res.cloudinary.com/exploreway/marta.jpg");
+
+        GuiaSalida guiaJorge = new GuiaSalida(
+                7, 21, "Jorge", "Ramírez",
+                "Guía especializado en buceo", "3 años en arrecifes de La Libertad",
+                "Bachillerato", false, true, new BigDecimal("4.80"),
+                1, "Activo", null);
+
+        when(guiaService.listar()).thenReturn(List.of(guiaMarta, guiaJorge));
+
+        mockMvc.perform(get("/api/guias"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].idGuia").value(6))
+                .andExpect(jsonPath("$[0].nombrePersona").value("Marta"))
+                .andExpect(jsonPath("$[1].idGuia").value(7))
+                .andExpect(jsonPath("$[1].nombrePersona").value("Jorge"));
+    }
+
 }
