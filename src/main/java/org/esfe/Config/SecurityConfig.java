@@ -47,7 +47,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/guia-actividades/**", "/api/guia-destinos/**").hasRole("Admin")
                         // El guía edita solo su propio perfil (el servicio toma el Id desde el token).
                         .requestMatchers(HttpMethod.PUT, "/api/guias/mi-perfil").hasRole("Guia")
-                        .requestMatchers(HttpMethod.GET, "/api/destinos/**", "/api/actividades/**", "/api/guias/**").authenticated()
+                        // Los destinos (y sus imágenes) se pueden consultar sin iniciar sesión; reservar sigue requiriendo login.
+                        .requestMatchers(HttpMethod.GET, "/api/destinos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/actividades/**", "/api/guias/**").authenticated()
                         .requestMatchers("/api/destinos/**", "/api/actividades/**", "/api/guias/**").hasRole("Admin")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
