@@ -42,6 +42,9 @@ public class SecurityConfig {
                         // (el guía necesita conocer los Id de estado); escribirlo sigue siendo solo Admin.
                         .requestMatchers(HttpMethod.GET, "/api/estados/**").authenticated()
                         .requestMatchers("/api/estados/**", "/api/roles/**", "/api/personas/**").hasRole("Admin")
+                        // Los guías (solo nombre y apellido) que atienden un destino se muestran en el catálogo público.
+                        // Debe ir antes de la regla siguiente: gana la primera que coincide.
+                        .requestMatchers(HttpMethod.GET, "/api/guia-destinos/destino/**").permitAll()
                         // Las asignaciones guía-actividad/guía-destino las gestiona el Admin; todos pueden consultarlas.
                         .requestMatchers(HttpMethod.GET, "/api/guia-actividades/**", "/api/guia-destinos/**").authenticated()
                         .requestMatchers("/api/guia-actividades/**", "/api/guia-destinos/**").hasRole("Admin")
@@ -49,6 +52,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/guias/mi-perfil").hasRole("Guia")
                         // Los destinos (y sus imágenes) se pueden consultar sin iniciar sesión; reservar sigue requiriendo login.
                         .requestMatchers(HttpMethod.GET, "/api/destinos/**").permitAll()
+                        // Solo las ofertas ACTIVAS de un destino (nombre, duración, precio) son públicas, para el catálogo.
+                        // GET /{id} y GET / (cualquier estado) siguen requiriendo sesión.
+                        .requestMatchers(HttpMethod.GET, "/api/destino-actividades/destino/**").permitAll()
+                        // Crear o cambiar duración/precio de una oferta es solo del Admin (antes bastaba con tener sesión).
+                        .requestMatchers(HttpMethod.POST, "/api/destino-actividades/**").hasRole("Admin")
+                        .requestMatchers(HttpMethod.PUT, "/api/destino-actividades/**").hasRole("Admin")
                         .requestMatchers(HttpMethod.GET, "/api/actividades/**", "/api/guias/**").authenticated()
                         .requestMatchers("/api/destinos/**", "/api/actividades/**", "/api/guias/**").hasRole("Admin")
                         .anyRequest().authenticated())

@@ -39,4 +39,22 @@ public interface IGuiaDestinoRepository extends JpaRepository<GuiaDestino, Integ
         """)
     List<GuiaDestino> buscarPorGuiaYEstado(@Param("idGuia") Integer idGuia,
                                            @Param("nombreEstado") String nombreEstado);
+
+    // Guías que atienden un destino, para mostrarlos en el catálogo público:
+    // asignación activa, destino activo, guía activo y marcado como disponible.
+    @Query("""
+        SELECT gd FROM GuiaDestino gd
+        JOIN FETCH gd.guia g
+        JOIN FETCH g.persona p
+        JOIN FETCH gd.destino d
+        JOIN FETCH gd.estado e
+        WHERE d.id = :idDestino
+        AND e.nombreEstado = :nombreEstado
+        AND d.estado.nombreEstado = :nombreEstado
+        AND g.estado.nombreEstado = :nombreEstado
+        AND g.estadoDisponibilidad = true
+        ORDER BY p.nombre, p.apellido
+        """)
+    List<GuiaDestino> buscarPorDestinoYEstado(@Param("idDestino") Integer idDestino,
+                                              @Param("nombreEstado") String nombreEstado);
 }

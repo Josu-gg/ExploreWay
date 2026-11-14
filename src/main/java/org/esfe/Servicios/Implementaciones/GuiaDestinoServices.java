@@ -44,6 +44,18 @@ public class GuiaDestinoServices implements IGuiaDestinoService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<GuiaDestinoSalida> listarActivosPorDestino(Integer idDestino) {
+        if (!destinoRepository.existsById(idDestino)) {
+            throw new RecursoNoEncontradoException("Destino no encontrado.");
+        }
+        return guiaDestinoRepository.buscarPorDestinoYEstado(idDestino, IEstadoService.ESTADO_ACTIVO)
+                .stream()
+                .map(GuiaDestinoSalida::desde)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public GuiaDestinoSalida obtenerPorId(Integer id) {
         return GuiaDestinoSalida.desde(buscar(id));
     }

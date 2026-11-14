@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 public interface IGuiaDestinoService {
     List<GuiaDestinoSalida> listarActivosPorGuia(Integer idGuia);
+    List<GuiaDestinoSalida> listarActivosPorDestino(Integer idDestino);
     GuiaDestinoSalida obtenerPorId(Integer id);
 
     //Administracion

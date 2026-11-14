@@ -43,6 +43,12 @@ public class GuiaDestinoControlller {
     public List<GuiaDestinoSalida> listarPorGuia(@PathVariable Integer idGuia) {
         return guiaDestinoService.listarActivosPorGuia(idGuia);
     }
+    @GetMapping("/destino/{idDestino}")
+    @Operation(summary = "Listar los guías activos y disponibles que atienden un destino")
+    public List<GuiaDestinoSalida> listarPorDestino(@PathVariable Integer idDestino) {
+        return guiaDestinoService.listarActivosPorDestino(idDestino);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener una asignación guía-destino por Id")
     public GuiaDestinoSalida obtenerPorId(@PathVariable Integer id) {
