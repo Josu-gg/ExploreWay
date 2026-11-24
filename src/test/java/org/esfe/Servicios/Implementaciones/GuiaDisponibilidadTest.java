@@ -42,6 +42,8 @@ public class GuiaDisponibilidadTest {
 
     private static final Integer ID_ESTADO_ACTIVO = 1;
     private static final String NOMBRE_ESTADO_ACTIVO = "Activo";
+    // Fecha relativa a hoy: la validación rechaza fechas pasadas, así que no usar fechas fijas.
+    private static final LocalDate FECHA_FUTURA = LocalDate.now().plusDays(30);
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,7 +58,7 @@ public class GuiaDisponibilidadTest {
     void cp77_registrarDisponibilidad_retorna201ConFranjaCreada() throws Exception {
         DisponibilidadGuiaGuardar dto = new DisponibilidadGuiaGuardar();
         dto.setIdGuia(6);
-        dto.setFecha(LocalDate.of(2026, 11, 10));
+        dto.setFecha(FECHA_FUTURA);
         dto.setHoraInicio(LocalTime.of(8, 0));
         dto.setHoraFin(LocalTime.of(14, 0));
 
@@ -75,7 +77,7 @@ public class GuiaDisponibilidadTest {
                 .andExpect(jsonPath("$.idDisponibilidad").value(11))
                 .andExpect(jsonPath("$.idGuia").value(6))
                 .andExpect(jsonPath("$.nombreGuia").value("Marta"))
-                .andExpect(jsonPath("$.fecha").value("2026-11-10"))
+                .andExpect(jsonPath("$.fecha").value(FECHA_FUTURA.toString()))
                 .andExpect(jsonPath("$.horaInicio").value("08:00:00"))
                 .andExpect(jsonPath("$.horaFin").value("14:00:00"))
                 .andExpect(jsonPath("$.idEstado").value(1))
@@ -88,7 +90,7 @@ public class GuiaDisponibilidadTest {
         Integer idDisponibilidad = 11;
 
         DisponibilidadGuiaModificar dto = new DisponibilidadGuiaModificar();
-        dto.setFecha(LocalDate.of(2026, 11, 10));
+        dto.setFecha(FECHA_FUTURA);
         dto.setHoraInicio(LocalTime.of(9, 0));
         dto.setHoraFin(LocalTime.of(15, 0));
         dto.setIdEstado(1);
@@ -106,7 +108,7 @@ public class GuiaDisponibilidadTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idDisponibilidad").value(idDisponibilidad))
                 .andExpect(jsonPath("$.idGuia").value(6))
-                .andExpect(jsonPath("$.fecha").value("2026-11-10"))
+                .andExpect(jsonPath("$.fecha").value(FECHA_FUTURA.toString()))
                 .andExpect(jsonPath("$.horaInicio").value("09:00:00"))
                 .andExpect(jsonPath("$.horaFin").value("15:00:00"))
                 .andExpect(jsonPath("$.idEstado").value(1))

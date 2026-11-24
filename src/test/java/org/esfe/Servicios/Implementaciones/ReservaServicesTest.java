@@ -51,7 +51,9 @@ public class ReservaServicesTest {
         dto.setIdCliente(4);
         dto.setIdGuia(6);
         dto.setIdDestinoActividad(3);
-        dto.setFechaRecorrido(LocalDate.of(2026, 11, 10));
+        // Fecha relativa a hoy: la validación rechaza fechas de recorrido pasadas.
+        LocalDate fechaFutura = LocalDate.now().plusDays(30);
+        dto.setFechaRecorrido(fechaFutura);
         dto.setHoraInicio(LocalTime.of(8, 0));
         dto.setCantidadPersonas(2);
         dto.setObservaciones("Llevar repelente de insectos");
@@ -59,7 +61,7 @@ public class ReservaServicesTest {
         ReservaSalida respuestaEsperada = construirReservaSalida(
                 15, 4, "Juan", "Pérez", 6, "Marta", "Hernández",
                 3, "Cerro Verde", "Senderismo",
-                LocalDate.of(2026, 11, 10), LocalTime.of(8, 0), LocalTime.of(11, 0),
+                fechaFutura, LocalTime.of(8, 0), LocalTime.of(11, 0),
                 2, new BigDecimal("51.00"), "Pendiente");
 
         when(reservaService.crear(any(ReservaGuardar.class))).thenReturn(respuestaEsperada);

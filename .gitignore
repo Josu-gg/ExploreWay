@@ -528,7 +528,7 @@ bin/
 out/
 ### Environment variables ###
 .env
-
+.agents/
 .postman/
 postman/
 .claude/
